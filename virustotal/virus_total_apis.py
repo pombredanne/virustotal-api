@@ -16,11 +16,12 @@ vt = vtPubAPI(<INSERT_API_KEY_HERE>)
 response = vt.get_file_report('44cda81782dc2a346abd7b2285530c5f')
 
 print json.dumps(response, sort_keys=False, indent=4)
-
 """
 __author__ = 'Josh Maine'
 __version__ = '1'
 __license__ = 'GPLv3'
+
+import os
 
 import requests
 
@@ -718,7 +719,7 @@ class IntelApi():
 
         return response.json()['next_page'], response
 
-    def get_file(self, file_hash, local_filename):
+    def get_file(self, file_hash, save_file_at):
         """ Get the scan results for a file.
 
         Even if you do not have a Private Mass API key that you can use, you can still download files from the
@@ -726,7 +727,7 @@ class IntelApi():
         also deduct quota.
 
         :param file_hash: You may use either the md5, sha1 or sha256 hash of the file in order to download it.
-        :param local_filename:
+        :param save_file_at: Path of where to save the file.
         """
         params = {'hash': file_hash, 'apikey': self.api_key}
 
@@ -736,6 +737,7 @@ class IntelApi():
             return dict(error=e)
 
         if response.status_code == requests.codes.ok:
+            self.save_downloaded_file(file_hash, save_file_at, response.content)
             return response.content
         elif response.status_code == 403:
             return dict(error='You tried to perform calls to functions for which you require a Private API key.',
@@ -757,19 +759,20 @@ class IntelApi():
         while next_page:
             next_page, response = self.get_hashes_from_search(self, query, next_page)
             responses.append(self.return_response_and_status_code(response))
-        return responses
+        return dict(results=responses)
 
     @staticmethod
-    def save_downloaded_file(local_filename):
+    def save_downloaded_file(filename, save_file_at, file_stream):
         """ Save Downloaded File to Disk Helper Function
 
-        :param local_filename: Name/Path of where to save the file.
+        :param save_file_at: Path of where to save the file.
+        :param file_stream: File stream
+        :param filename: Name to save the file.
         """
-        with open(local_filename, 'wb') as f:
-            for chunk in requests.iter_content(chunk_size=1024):
-                if chunk:  # filter out keep-alive new chunks
-                    f.write(chunk)
-                    f.flush()
+        filename = os.path.join(save_file_at, filename)
+        with open(filename, 'wb') as f:
+            f.write(file_stream)
+            f.flush()
 
     @staticmethod
     def return_response_and_status_code(response):
