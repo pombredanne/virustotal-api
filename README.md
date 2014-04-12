@@ -3,6 +3,8 @@
 virustotal-api
 ==============
 
+[![Build Status](https://travis-ci.org/blacktop/virustotal-api.svg?branch=master)](https://travis-ci.org/blacktop/virustotal-api)
+
 Virus Total Public/Private/Intel API
 
 - https://www.virustotal.com/en/documentation/public-api/
