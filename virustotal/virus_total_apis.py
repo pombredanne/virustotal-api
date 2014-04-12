@@ -22,7 +22,7 @@ __version__ = '1'
 __license__ = 'GPLv3'
 
 import os
-
+import StringIO
 import requests
 
 
@@ -48,11 +48,13 @@ class PublicApi():
     Noncompliance of these terms will result in inmediate permanent ban of the infractor individual or organization.
     """
 
-    def __init__(self, api_key, proxies=None):
+    def __init__(self, api_key=None, proxies=None):
         self.api_key = api_key
         self.proxies = proxies
         self.base = 'https://www.virustotal.com/vtapi/v2/'
         self.version = 2
+        if api_key is None:
+            raise ApiError("You must supply a valid VirusTotal API key.")
 
     def scan_file(self, this_file):
         """ Submit a file to be scanned by VirusTotal
@@ -61,14 +63,22 @@ class PublicApi():
         :return: JSON response that contains scan_id and permalink.
         """
         params = {'apikey': self.api_key}
-        files = {'file': (this_file, open(this_file, 'rb'))}
+        try:
+            if os.path.isfile(this_file):
+                files = {'file': (this_file, open(this_file, 'rb'))}
+            elif isinstance(this_file, StringIO.StringIO):
+                files = {'file': this_file.read()}
+            else:
+                files = {'file': this_file}
+        except TypeError as e:
+            return dict(error=e.message)
 
         try:
-            response = requests.post(self.base + 'file/scan', file=files, params=params, proxies=self.proxies)
+            response = requests.post(self.base + 'file/scan', files=files, params=params, proxies=self.proxies)
         except requests.RequestException as e:
-            return dict(error=e)
+            return dict(error=e.message)
 
-        return self.return_response_and_status_code(response)
+        return return_response_and_status_code(response)
 
     def rescan_file(self, this_hash):
         """ Rescan a previously submitted filed or schedule an scan to be performed in the future.
@@ -83,9 +93,9 @@ class PublicApi():
         try:
             response = requests.post(self.base + 'file/rescan', params=params, proxies=self.proxies)
         except requests.RequestException as e:
-            return dict(error=e)
+            return dict(error=e.message)
 
-        return self.return_response_and_status_code(response)
+        return return_response_and_status_code(response)
 
     def get_file_report(self, this_hash):
         """ Get the scan results for a file.
@@ -104,9 +114,9 @@ class PublicApi():
         try:
             response = requests.get(self.base + 'file/report', params=params, proxies=self.proxies)
         except requests.RequestException as e:
-            return dict(error=e)
+            return dict(error=e.message)
 
-        return self.return_response_and_status_code(response)
+        return return_response_and_status_code(response)
 
     def scan_url(self, this_url):
         """ Submit a URL to be scanned by VirusTotal.
@@ -121,9 +131,9 @@ class PublicApi():
         try:
             response = requests.post(self.base + 'url/scan', params=params, proxies=self.proxies)
         except requests.RequestException as e:
-            return dict(error=e)
+            return dict(error=e.message)
 
-        return self.return_response_and_status_code(response)
+        return return_response_and_status_code(response)
 
     def get_url_report(self, this_url, scan='0'):
         """ Get the scan results for a URL. (can do batch searches like get_file_report)
@@ -144,9 +154,9 @@ class PublicApi():
         try:
             response = requests.get(self.base + 'url/report', params=params, proxies=self.proxies)
         except requests.RequestException as e:
-            return dict(error=e)
+            return dict(error=e.message)
 
-        return self.return_response_and_status_code(response)
+        return return_response_and_status_code(response)
 
     def put_comments(self, resource, comment):
         """ Post a comment on a file or URL.
@@ -169,9 +179,9 @@ class PublicApi():
         try:
             response = requests.post(self.base + 'comments/put', params=params, proxies=self.proxies)
         except requests.RequestException as e:
-            return dict(error=e)
+            return dict(error=e.message)
 
-        return self.return_response_and_status_code(response)
+        return return_response_and_status_code(response)
 
     def get_ip_report(self, this_ip):
         """ Get IP address reports.
@@ -185,9 +195,9 @@ class PublicApi():
         try:
             response = requests.get(self.base + 'ip-address/report', params=params, proxies=self.proxies)
         except requests.RequestException as e:
-            return dict(error=e)
+            return dict(error=e.message)
 
-        return self.return_response_and_status_code(response)
+        return return_response_and_status_code(response)
 
     def get_domain_report(self, this_domain):
         """ Get information about a given domain.
@@ -200,27 +210,9 @@ class PublicApi():
         try:
             response = requests.get(self.base + 'domain/report', params=params, proxies=self.proxies)
         except requests.RequestException as e:
-            return dict(error=e)
+            return dict(error=e.message)
 
-        return self.return_response_and_status_code(response)
-
-    @staticmethod
-    def return_response_and_status_code(response):
-        """ Output the requests response JSON and status code
-
-        :param response: requests response object
-        :return: dict containing the JSON response and/or the status code with error string.
-        """
-        if response.status_code == requests.codes.ok:
-            return response.json()
-        elif response.status_code == 204:
-            return dict(error='You exceed the public API request rate limit (4 requests of any nature per minute',
-                        response_code=response.status_code)
-        elif response.status_code == 403:
-            return dict(error='You tried to perform calls to functions for which you require a Private API key.',
-                        response_code=response.status_code)
-        else:
-            return dict(response_code=response.status_code)
+        return return_response_and_status_code(response)
 
 
 class PrivateApi(PublicApi):
@@ -244,9 +236,9 @@ class PrivateApi(PublicApi):
         try:
             response = requests.post(self.base + 'file/scan', file=files, params=params, proxies=self.proxies)
         except requests.RequestException as e:
-            return dict(error=e)
+            return dict(error=e.message)
 
-        return self.return_response_and_status_code(response)
+        return return_response_and_status_code(response)
 
     @property
     def get_upload_url(self):
@@ -262,7 +254,7 @@ class PrivateApi(PublicApi):
         try:
             response = requests.get(self.base + 'file/scan/upload_url', params=params, proxies=self.proxies)
         except requests.RequestException as e:
-            return dict(error=e)
+            return dict(error=e.message)
 
         if response.status_code == requests.codes.ok:
             return response.json()['upload_url']
@@ -298,9 +290,9 @@ class PrivateApi(PublicApi):
         try:
             response = requests.post(self.base + 'file/rescan', params=params, proxies=self.proxies)
         except requests.RequestException as e:
-            return dict(error=e)
+            return dict(error=e.message)
 
-        return self.return_response_and_status_code(response)
+        return return_response_and_status_code(response)
 
     def cancel_rescan_file(self, resource):
         """ Delete a previously scheduled scan.
@@ -318,9 +310,9 @@ class PrivateApi(PublicApi):
         try:
             response = requests.post(self.base + 'rescan/delete', params=params, proxies=self.proxies)
         except requests.RequestException as e:
-            return dict(error=e)
+            return dict(error=e.message)
 
-        return self.return_response_and_status_code(response)
+        return return_response_and_status_code(response)
 
     def get_file_report(self, resource, allinfo=1):
         """ Get the scan results for a file.
@@ -346,9 +338,9 @@ class PrivateApi(PublicApi):
         try:
             response = requests.get(self.base + 'file/report', params=params, proxies=self.proxies)
         except requests.RequestException as e:
-            return dict(error=e)
+            return dict(error=e.message)
 
-        return self.return_response_and_status_code(response)
+        return return_response_and_status_code(response)
 
     def get_file_behaviour(self, this_hash):
         """ Get a report about the behaviour of the file in sand boxed environment.
@@ -370,9 +362,9 @@ class PrivateApi(PublicApi):
         try:
             response = requests.get(self.base + 'file/behaviour', params=params, proxies=self.proxies)
         except requests.RequestException as e:
-            return dict(error=e)
+            return dict(error=e.message)
 
-        return self.return_response_and_status_code(response)
+        return return_response_and_status_code(response)
 
     def get_network_traffic(self, this_hash):
         """ Get a dump of the network traffic generated by the file.
@@ -394,13 +386,13 @@ class PrivateApi(PublicApi):
         try:
             response = requests.get(self.base + 'file/network-traffic', params=params, proxies=self.proxies)
         except requests.RequestException as e:
-            return dict(error=e)
+            return dict(error=e.message)
         # TODO - Test this out and return the pcap properly.
         # import magic
         # ms = magic.magic_open(magic.MAGIC_NONE)
         # ms.load()
         # return ms.buffer(response.text)
-        return self.return_response_and_status_code(response)
+        return return_response_and_status_code(response)
 
     def file_search(self, query, offset=None):
         """ Search for samples.
@@ -438,9 +430,9 @@ class PrivateApi(PublicApi):
         try:
             response = requests.get(self.base + 'file/search', params=params, proxies=self.proxies)
         except requests.RequestException as e:
-            return dict(error=e)
+            return dict(error=e.message)
 
-        return self.return_response_and_status_code(response)
+        return return_response_and_status_code(response)
 
     def get_file_clusters(self, this_date):
         """ File similarity clusters for a given time frame.
@@ -477,9 +469,9 @@ class PrivateApi(PublicApi):
         try:
             response = requests.get(self.base + 'file/clusters', params=params, proxies=self.proxies)
         except requests.RequestException as e:
-            return dict(error=e)
+            return dict(error=e.message)
 
-        return self.return_response_and_status_code(response)
+        return return_response_and_status_code(response)
 
     def get_file_distribution(self, before='', after='', reports='false', limit='1000'):
         """ Get a live feed with the latest files submitted to VirusTotal.
@@ -500,9 +492,9 @@ class PrivateApi(PublicApi):
         try:
             response = requests.get(self.base + 'file/distribution', params=params, proxies=self.proxies)
         except requests.RequestException as e:
-            return dict(error=e)
+            return dict(error=e.message)
 
-        return self.return_response_and_status_code(response)
+        return return_response_and_status_code(response)
 
     def get_file(self, this_hash):
         """ Download a file by its hash.
@@ -518,7 +510,7 @@ class PrivateApi(PublicApi):
         try:
             response = requests.get(self.base + 'file/download', params=params, proxies=self.proxies)
         except requests.RequestException as e:
-            return dict(error=e)
+            return dict(error=e.message)
 
         if response.status_code == requests.codes.ok:
             return response.content
@@ -547,9 +539,9 @@ class PrivateApi(PublicApi):
         try:
             response = requests.post(self.base + 'url/scan', params=params, proxies=self.proxies)
         except requests.RequestException as e:
-            return dict(error=e)
+            return dict(error=e.message)
 
-        return self.return_response_and_status_code(response)
+        return return_response_and_status_code(response)
 
     def get_url_report(self, this_url, scan=1, allinfo=1):
         """ Get the scan results for a URL.
@@ -573,9 +565,9 @@ class PrivateApi(PublicApi):
         try:
             response = requests.get(self.base + 'url/report', params=params, proxies=self.proxies)
         except requests.RequestException as e:
-            return dict(error=e)
+            return dict(error=e.message)
 
-        return self.return_response_and_status_code(response)
+        return return_response_and_status_code(response)
 
     def get_url_distribution(self, after=None, reports=True, limit=1000):
         """ Get a live feed with the lastest URLs submitted to VirusTotal.
@@ -596,9 +588,9 @@ class PrivateApi(PublicApi):
         try:
             response = requests.get(self.base + 'url/distribution', params=params, proxies=self.proxies)
         except requests.RequestException as e:
-            return dict(error=e)
+            return dict(error=e.message)
 
-        return self.return_response_and_status_code(response)
+        return return_response_and_status_code(response)
 
     def get_ip_report(self, this_ip):
         """ Get information about a given IP address.
@@ -615,9 +607,9 @@ class PrivateApi(PublicApi):
         try:
             response = requests.get(self.base + 'ip-address/report', params=params, proxies=self.proxies)
         except requests.RequestException as e:
-            return dict(error=e)
+            return dict(error=e.message)
 
-        return self.return_response_and_status_code(response)
+        return return_response_and_status_code(response)
 
     def get_domain_report(self, this_domain):
         """ Get information about a given domain.
@@ -633,9 +625,9 @@ class PrivateApi(PublicApi):
         try:
             response = requests.get(self.base + 'domain/report', params=params, proxies=self.proxies)
         except requests.RequestException as e:
-            return dict(error=e)
+            return dict(error=e.message)
 
-        return self.return_response_and_status_code(response)
+        return return_response_and_status_code(response)
 
     def put_comments(self, resource, comment):
         """ Post a comment on a file or URL.
@@ -658,9 +650,9 @@ class PrivateApi(PublicApi):
         try:
             response = requests.post(self.base + 'comments/put', params=params, proxies=self.proxies)
         except requests.RequestException as e:
-            return dict(error=e)
+            return dict(error=e.message)
 
-        return self.return_response_and_status_code(response)
+        return return_response_and_status_code(response)
 
     def get_comments(self, resource, before=None):
         """ Get comments for a file or URL.
@@ -680,9 +672,9 @@ class PrivateApi(PublicApi):
         try:
             response = requests.get(self.base + 'comments/get', params=params, proxies=self.proxies)
         except requests.RequestException as e:
-            return dict(error=e)
+            return dict(error=e.message)
 
-        return self.return_response_and_status_code(response)
+        return return_response_and_status_code(response)
 
 
 class IntelApi():
@@ -714,7 +706,7 @@ class IntelApi():
         try:
             response = requests.get(self.base + 'search/programmatic/', params=params, proxies=self.proxies)
         except requests.RequestException as e:
-            return dict(error=e)
+            return dict(error=e.message)
 
         return response.json()['next_page'], response
 
@@ -733,7 +725,7 @@ class IntelApi():
         try:
             response = requests.get(self.base + 'download/', params=params, proxies=self.proxies, stream=True)
         except requests.RequestException as e:
-            return dict(error=e)
+            return dict(error=e.message)
 
         if response.status_code == requests.codes.ok:
             self.save_downloaded_file(file_hash, save_file_at, response.content)
@@ -754,10 +746,10 @@ class IntelApi():
         """
         responses = []
         next_page, response = self.get_hashes_from_search(self, query)
-        responses.append(self.return_response_and_status_code(response))
+        responses.append(return_response_and_status_code(response))
         while next_page:
             next_page, response = self.get_hashes_from_search(query, next_page)
-            responses.append(self.return_response_and_status_code(response))
+            responses.append(return_response_and_status_code(response))
         return dict(results=responses)
 
     @staticmethod
@@ -773,20 +765,25 @@ class IntelApi():
             f.write(file_stream)
             f.flush()
 
-    @staticmethod
-    def return_response_and_status_code(response):
-        """ Output the requests response JSON and status code
 
-        :param response: requests response object
-        :return: dict containing the JSON response and/or the status code with error string.
-        """
-        if response.status_code == requests.codes.ok:
-            return response.json()
-        elif response.status_code == 204:
-            return dict(error='You exceed the public API request rate limit (4 requests of any nature per minute',
-                        response_code=response.status_code)
-        elif response.status_code == 403:
-            return dict(error='You tried to perform calls to functions for which you require a Private API key.',
-                        response_code=response.status_code)
-        else:
-            return dict(response_code=response.status_code)
+class ApiError(Exception):
+    pass
+
+
+def return_response_and_status_code(response):
+    """ Output the requests response JSON and status code
+
+    :rtype : dict
+    :param response: requests response object
+    :return: dict containing the JSON response and/or the status code with error string.
+    """
+    if response.status_code == requests.codes.ok:
+        return response.json()
+    elif response.status_code == 204:
+        return dict(error='You exceeded the public API request rate limit (4 requests of any nature per minute)',
+                    response_code=response.status_code)
+    elif response.status_code == 403:
+        return dict(error='You tried to perform calls to functions for which you require a Private API key.',
+                    response_code=response.status_code)
+    else:
+        return dict(response_code=response.status_code)
