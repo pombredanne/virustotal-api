@@ -402,7 +402,7 @@ class PrivateApi(PublicApi):
         # return ms.buffer(response.text)
         return self.return_response_and_status_code(response)
 
-    def file_search(self, query, offset=300):
+    def file_search(self, query, offset=None):
         """ Search for samples.
 
         In addition to retrieving all information on a particular file, VirusTotal allows you to perform what we
@@ -433,8 +433,7 @@ class PrivateApi(PublicApi):
         :return: JSON response -  By default the list returned contains at most 300 hashes, ordered according to
         last submission date to VirusTotal in a descending fashion.
         """
-        # TODO - add the offset argument
-        params = {'apikey': self.api_key, 'query': query}
+        params = dict(apikey=self.api_key, query=query, offset=offset)
 
         try:
             response = requests.get(self.base + 'file/search', params=params, proxies=self.proxies)
@@ -663,7 +662,7 @@ class PrivateApi(PublicApi):
 
         return self.return_response_and_status_code(response)
 
-    def get_comments(self, resource, before=''):
+    def get_comments(self, resource, before=None):
         """ Get comments for a file or URL.
 
         Retrieve a list of VirusTotal Community comments for a given file or URL. VirusTotal Community comments are
@@ -676,7 +675,7 @@ class PrivateApi(PublicApi):
         :return: JSON response - The application answers with the comments sorted in descending order according to
         their date.
         """
-        params = {'apikey': self.api_key, 'resource': resource}
+        params = dict(apikey=self.api_key, resource=resource, before=before)
 
         try:
             response = requests.get(self.base + 'comments/get', params=params, proxies=self.proxies)
@@ -757,7 +756,7 @@ class IntelApi():
         next_page, response = self.get_hashes_from_search(self, query)
         responses.append(self.return_response_and_status_code(response))
         while next_page:
-            next_page, response = self.get_hashes_from_search(self, query, next_page)
+            next_page, response = self.get_hashes_from_search(query, next_page)
             responses.append(self.return_response_and_status_code(response))
         return dict(results=responses)
 
