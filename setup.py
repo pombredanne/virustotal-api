@@ -5,7 +5,7 @@ except ImportError:
     from distutils.core import setup
 
 setup(
-    name='virustotal_api',
+    name='virustotal-api',
     test_suite="tests",
     version='1',
     packages=['virustotal', 'virustotal.test'],
