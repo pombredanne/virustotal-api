@@ -34,7 +34,8 @@ vt = VirusTotalPublicApi(API_KEY)
 response =  vt.get_file_report(EICAR_MD5)
 print json.dumps(response, sort_keys=False, indent=4)
 ```
-Output:
+
+#### Output:
 ```json
 {
     "response_code": 200,
