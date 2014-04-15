@@ -18,7 +18,7 @@ response = vt.get_file_report('44cda81782dc2a346abd7b2285530c5f')
 print json.dumps(response, sort_keys=False, indent=4)
 """
 __author__ = 'Josh Maine'
-__version__ = '1'
+__version__ = '1.0.1'
 __license__ = 'GPLv3'
 
 import os
