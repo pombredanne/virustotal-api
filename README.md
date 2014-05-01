@@ -3,7 +3,7 @@
 virustotal-api
 ==============
 
-[![PyPI version](https://badge.fury.io/py/virustotal-api.svg)](http://badge.fury.io/py/virustotal-api) [![Build Status](https://travis-ci.org/blacktop/virustotal-api.svg?branch=master)](https://travis-ci.org/blacktop/virustotal-api)
+[![PyPI version](https://badge.fury.io/py/virustotal-api.svg)](http://badge.fury.io/py/virustotal-api) [![Build Status](https://travis-ci.org/blacktop/virustotal-api.svg?branch=master)](https://travis-ci.org/blacktop/virustotal-api) [![Downloads](https://pypip.in/download/virustotal-api/badge.png)](https://pypi.python.org/pypi/virustotal-api/)
 
 Virus Total Public/Private/Intel API
 
