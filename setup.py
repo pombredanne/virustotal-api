@@ -2,7 +2,7 @@
 import os
 import sys
 
-import virus_total_api
+import virus_total_apis
 
 from setuptools import setup
 
@@ -16,14 +16,14 @@ with open('HISTORY.rst') as f:
     history = f.read()
 
 setup(name='virustotal-api'
-        ,version=virus_total_api.__version__
+        ,version=virus_total_apis.__version__
         ,description='Virus Total Public/Private/Intel API'
         ,long_description=readme + '\n\n' + history
         ,url='https://github.com/blacktop/virustotal-api'
         ,author='blacktop'
         ,author_email='dev@blacktop.io'
-        ,license=virus_total_api.__license__
+        ,license=virus_total_apis.__license__
         ,test_suite="tests"
-        ,packages=['virus_total_api']
-        ,package_dir={'virus_total_api': 'virus_total_api'}
+        ,packages=['virus_total_apis']
+        ,package_dir={'virus_total_apis': 'virus_total_apis'}
         ,install_requires=["requests >= 2.2.1"])
