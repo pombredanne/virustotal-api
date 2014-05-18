@@ -1,12 +1,19 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-__author__ = 'Josh Maine'
-__version__ = '1.0.1'
-__license__ = 'GPLv3'
+"""
+test-virustotal-api
+~~~~~~~~~~~~
+
+This module tests the VirusTotal API.
+
+:copyright: (c) 2014 by Josh "blacktop" Maine.
+:license: GPLv3, see LICENSE for more details.
+
+"""
 
 from unittest import TestCase
-import hashlib
 import json
+import hashlib
 import StringIO
 from virustotal.virus_total_apis import PublicApi, ApiError
 

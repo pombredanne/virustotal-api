@@ -3,6 +3,9 @@
 
 """ Simple class to interact with VirusTotal's Public and Private API as well as VirusTotal Intelligence.
 
+:copyright: (c) 2014 by Josh "blacktop" Maine.
+:license: GPLv3, see LICENSE for more details.
+
 The APIs are documented at:
 https://www.virustotal.com/en/documentation/public-api/
 https://www.virustotal.com/en/documentation/private-api/
@@ -17,13 +20,13 @@ response = vt.get_file_report('44cda81782dc2a346abd7b2285530c5f')
 
 print json.dumps(response, sort_keys=False, indent=4)
 """
-__author__ = 'Josh Maine'
-__version__ = '1.0.1'
-__license__ = 'GPLv3'
 
 import os
 import StringIO
-import requests
+try:
+    import requests
+except ImportError:
+    pass
 
 
 class PublicApi():
@@ -78,7 +81,7 @@ class PublicApi():
         except requests.RequestException as e:
             return dict(error=e.message)
 
-        return return_response_and_status_code(response)
+        return _return_response_and_status_code(response)
 
     def rescan_file(self, this_hash):
         """ Rescan a previously submitted filed or schedule an scan to be performed in the future.
@@ -95,7 +98,7 @@ class PublicApi():
         except requests.RequestException as e:
             return dict(error=e.message)
 
-        return return_response_and_status_code(response)
+        return _return_response_and_status_code(response)
 
     def get_file_report(self, this_hash):
         """ Get the scan results for a file.
@@ -116,7 +119,7 @@ class PublicApi():
         except requests.RequestException as e:
             return dict(error=e.message)
 
-        return return_response_and_status_code(response)
+        return _return_response_and_status_code(response)
 
     def scan_url(self, this_url):
         """ Submit a URL to be scanned by VirusTotal.
@@ -133,7 +136,7 @@ class PublicApi():
         except requests.RequestException as e:
             return dict(error=e.message)
 
-        return return_response_and_status_code(response)
+        return _return_response_and_status_code(response)
 
     def get_url_report(self, this_url, scan='0'):
         """ Get the scan results for a URL. (can do batch searches like get_file_report)
@@ -156,7 +159,7 @@ class PublicApi():
         except requests.RequestException as e:
             return dict(error=e.message)
 
-        return return_response_and_status_code(response)
+        return _return_response_and_status_code(response)
 
     def put_comments(self, resource, comment):
         """ Post a comment on a file or URL.
@@ -181,7 +184,7 @@ class PublicApi():
         except requests.RequestException as e:
             return dict(error=e.message)
 
-        return return_response_and_status_code(response)
+        return _return_response_and_status_code(response)
 
     def get_ip_report(self, this_ip):
         """ Get IP address reports.
@@ -197,7 +200,7 @@ class PublicApi():
         except requests.RequestException as e:
             return dict(error=e.message)
 
-        return return_response_and_status_code(response)
+        return _return_response_and_status_code(response)
 
     def get_domain_report(self, this_domain):
         """ Get information about a given domain.
@@ -212,7 +215,7 @@ class PublicApi():
         except requests.RequestException as e:
             return dict(error=e.message)
 
-        return return_response_and_status_code(response)
+        return _return_response_and_status_code(response)
 
 
 class PrivateApi(PublicApi):
@@ -238,7 +241,7 @@ class PrivateApi(PublicApi):
         except requests.RequestException as e:
             return dict(error=e.message)
 
-        return return_response_and_status_code(response)
+        return _return_response_and_status_code(response)
 
     @property
     def get_upload_url(self):
@@ -292,7 +295,7 @@ class PrivateApi(PublicApi):
         except requests.RequestException as e:
             return dict(error=e.message)
 
-        return return_response_and_status_code(response)
+        return _return_response_and_status_code(response)
 
     def cancel_rescan_file(self, resource):
         """ Delete a previously scheduled scan.
@@ -312,7 +315,7 @@ class PrivateApi(PublicApi):
         except requests.RequestException as e:
             return dict(error=e.message)
 
-        return return_response_and_status_code(response)
+        return _return_response_and_status_code(response)
 
     def get_file_report(self, resource, allinfo=1):
         """ Get the scan results for a file.
@@ -340,7 +343,7 @@ class PrivateApi(PublicApi):
         except requests.RequestException as e:
             return dict(error=e.message)
 
-        return return_response_and_status_code(response)
+        return _return_response_and_status_code(response)
 
     def get_file_behaviour(self, this_hash):
         """ Get a report about the behaviour of the file in sand boxed environment.
@@ -364,7 +367,7 @@ class PrivateApi(PublicApi):
         except requests.RequestException as e:
             return dict(error=e.message)
 
-        return return_response_and_status_code(response)
+        return _return_response_and_status_code(response)
 
     def get_network_traffic(self, this_hash):
         """ Get a dump of the network traffic generated by the file.
@@ -392,7 +395,7 @@ class PrivateApi(PublicApi):
         # ms = magic.magic_open(magic.MAGIC_NONE)
         # ms.load()
         # return ms.buffer(response.text)
-        return return_response_and_status_code(response)
+        return _return_response_and_status_code(response)
 
     def file_search(self, query, offset=None):
         """ Search for samples.
@@ -432,7 +435,7 @@ class PrivateApi(PublicApi):
         except requests.RequestException as e:
             return dict(error=e.message)
 
-        return return_response_and_status_code(response)
+        return _return_response_and_status_code(response)
 
     def get_file_clusters(self, this_date):
         """ File similarity clusters for a given time frame.
@@ -471,7 +474,7 @@ class PrivateApi(PublicApi):
         except requests.RequestException as e:
             return dict(error=e.message)
 
-        return return_response_and_status_code(response)
+        return _return_response_and_status_code(response)
 
     def get_file_distribution(self, before='', after='', reports='false', limit='1000'):
         """ Get a live feed with the latest files submitted to VirusTotal.
@@ -494,7 +497,7 @@ class PrivateApi(PublicApi):
         except requests.RequestException as e:
             return dict(error=e.message)
 
-        return return_response_and_status_code(response)
+        return _return_response_and_status_code(response)
 
     def get_file(self, this_hash):
         """ Download a file by its hash.
@@ -541,7 +544,7 @@ class PrivateApi(PublicApi):
         except requests.RequestException as e:
             return dict(error=e.message)
 
-        return return_response_and_status_code(response)
+        return _return_response_and_status_code(response)
 
     def get_url_report(self, this_url, scan=1, allinfo=1):
         """ Get the scan results for a URL.
@@ -567,7 +570,7 @@ class PrivateApi(PublicApi):
         except requests.RequestException as e:
             return dict(error=e.message)
 
-        return return_response_and_status_code(response)
+        return _return_response_and_status_code(response)
 
     def get_url_distribution(self, after=None, reports=True, limit=1000):
         """ Get a live feed with the lastest URLs submitted to VirusTotal.
@@ -590,7 +593,7 @@ class PrivateApi(PublicApi):
         except requests.RequestException as e:
             return dict(error=e.message)
 
-        return return_response_and_status_code(response)
+        return _return_response_and_status_code(response)
 
     def get_ip_report(self, this_ip):
         """ Get information about a given IP address.
@@ -609,7 +612,7 @@ class PrivateApi(PublicApi):
         except requests.RequestException as e:
             return dict(error=e.message)
 
-        return return_response_and_status_code(response)
+        return _return_response_and_status_code(response)
 
     def get_domain_report(self, this_domain):
         """ Get information about a given domain.
@@ -627,7 +630,7 @@ class PrivateApi(PublicApi):
         except requests.RequestException as e:
             return dict(error=e.message)
 
-        return return_response_and_status_code(response)
+        return _return_response_and_status_code(response)
 
     def put_comments(self, resource, comment):
         """ Post a comment on a file or URL.
@@ -652,7 +655,7 @@ class PrivateApi(PublicApi):
         except requests.RequestException as e:
             return dict(error=e.message)
 
-        return return_response_and_status_code(response)
+        return _return_response_and_status_code(response)
 
     def get_comments(self, resource, before=None):
         """ Get comments for a file or URL.
@@ -674,7 +677,7 @@ class PrivateApi(PublicApi):
         except requests.RequestException as e:
             return dict(error=e.message)
 
-        return return_response_and_status_code(response)
+        return _return_response_and_status_code(response)
 
 
 class IntelApi():
@@ -746,10 +749,10 @@ class IntelApi():
         """
         responses = []
         next_page, response = self.get_hashes_from_search(self, query)
-        responses.append(return_response_and_status_code(response))
+        responses.append(_return_response_and_status_code(response))
         while next_page:
             next_page, response = self.get_hashes_from_search(query, next_page)
-            responses.append(return_response_and_status_code(response))
+            responses.append(_return_response_and_status_code(response))
         return dict(results=responses)
 
     @staticmethod

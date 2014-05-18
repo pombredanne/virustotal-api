@@ -22,7 +22,7 @@ Usage
 ```python
 import json
 import hashlib
-from virustotal.virus_total_apis import PublicApi as VirusTotalPublicApi
+from virus_total_apis import PublicApi as VirusTotalPublicApi
 
 API_KEY = 'Sign-Up for API Key at virustotal.com'
 
