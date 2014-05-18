@@ -773,7 +773,7 @@ class ApiError(Exception):
     pass
 
 
-def return_response_and_status_code(response):
+def _return_response_and_status_code(response):
     """ Output the requests response JSON and status code
 
     :rtype : dict

@@ -15,7 +15,7 @@ from unittest import TestCase
 import json
 import hashlib
 import StringIO
-from virustotal.virus_total_apis import PublicApi, ApiError
+from virus_total_apis import PublicApi, ApiError
 
 # I created an account to get this API Key for test purposes, please get your own.
 API_KEY = '2539516d471d7beb6b28a720d7a25024edc0f7590d345fc747418645002ac47b'
