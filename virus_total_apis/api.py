@@ -237,7 +237,7 @@ class PrivateApi(PublicApi):
         files = {'file': (this_file, open(this_file, 'rb'))}
 
         try:
-            response = requests.post(self.base + 'file/scan', file=files, params=params, proxies=self.proxies)
+            response = requests.post(self.base + 'file/scan', files=files, params=params, proxies=self.proxies)
         except requests.RequestException as e:
             return dict(error=e.message)
 
