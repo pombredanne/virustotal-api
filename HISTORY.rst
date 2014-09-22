@@ -3,6 +3,13 @@
 Release History
 ---------------
 
+1.0.6 (2014-05-18)
+------------------
+
+**Bugfixes**
+
+- Fixed a small typo in the private API's scan_file method (credit: adrianherrera)
+
 1.0.5 (2014-05-18)
 ------------------
 

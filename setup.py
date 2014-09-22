@@ -2,9 +2,9 @@
 import os
 import sys
 
-import virus_total_apis
-
 from setuptools import setup
+
+import virus_total_apis
 
 if sys.argv[-1] == 'publish':
     os.system('python setup.py sdist upload')
