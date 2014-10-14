@@ -390,12 +390,11 @@ class PrivateApi(PublicApi):
             response = requests.get(self.base + 'file/network-traffic', params=params, proxies=self.proxies)
         except requests.RequestException as e:
             return dict(error=e.message)
-        # TODO - Test this out and return the pcap properly.
-        # import magic
-        # ms = magic.magic_open(magic.MAGIC_NONE)
-        # ms.load()
-        # return ms.buffer(response.text)
-        return _return_response_and_status_code(response)
+
+        try:
+            return _return_response_and_status_code(response)
+        except ValueError:
+            return response.content
 
     def file_search(self, query, offset=None):
         """ Search for samples.
