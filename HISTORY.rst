@@ -3,6 +3,13 @@
 Release History
 ---------------
 
+1.0.7 (2014-10-17)
+------------------
+
+**Bugfixes**
+
+- Fixed get_network_traffic method to return the pcap data (credit: adrianherrera)
+
 1.0.6 (2014-09-22)
 ------------------
 
