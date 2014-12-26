@@ -545,7 +545,7 @@ class PrivateApi(PublicApi):
 
         return _return_response_and_status_code(response)
 
-    def get_url_report(self, this_url, scan=1, allinfo=1):
+    def get_url_report(self, this_url, scan='0', allinfo=1):
         """ Get the scan results for a URL.
 
         :param this_url: A URL for which you want to retrieve the most recent report. You may also specify a scan_id
@@ -561,8 +561,8 @@ class PrivateApi(PublicApi):
         of other tools and datasets when fed with the URL.
         :return: JSON response
         """
-        # TODO - Confirm that it is resource and not url
-        params = {'apikey': self.api_key, 'resource': this_url, 'allinfo': allinfo}
+
+        params = {'apikey': self.api_key, 'resource': this_url, 'scan': scan, 'allinfo': allinfo}
 
         try:
             response = requests.get(self.base + 'url/report', params=params, proxies=self.proxies)
@@ -571,7 +571,7 @@ class PrivateApi(PublicApi):
 
         return _return_response_and_status_code(response)
 
-    def get_url_distribution(self, after=None, reports=True, limit=1000):
+    def get_url_distribution(self, after=None, reports='true', limit=1000):
         """ Get a live feed with the lastest URLs submitted to VirusTotal.
 
         Allows you to retrieve a live feed of URLs submitted to VirusTotal, along with their scan reports. This
@@ -584,7 +584,7 @@ class PrivateApi(PublicApi):
         :param limit: (optional) Retrieve limit file items at most (default: 1000).
         :return: JSON response
         """
-        # TODO - clarify confussion over reports need True or 'true'
+
         params = {'apikey': self.api_key, 'after': after, 'reports': reports, 'limit': limit}
 
         try:

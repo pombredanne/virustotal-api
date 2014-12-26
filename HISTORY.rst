@@ -3,6 +3,13 @@
 Release History
 ---------------
 
+1.0.8 (2014-12-26)
+------------------
+
+**Bugfixes**
+
+- Fixed get_url_report method for the Private API (credit: @John-Lin)
+
 1.0.7 (2014-10-17)
 ------------------
 
