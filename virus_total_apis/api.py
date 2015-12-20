@@ -68,7 +68,7 @@ class PublicApi():
         params = {'apikey': self.api_key}
         try:
             if os.path.isfile(this_file):
-                files = {'file': (this_file, open(this_file, 'rb'))}
+                files = {'file': (os.path.basename(this_file), open(this_file, 'rb').read())}
             elif isinstance(this_file, StringIO.StringIO):
                 files = {'file': this_file.read()}
             else:
