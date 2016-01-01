@@ -3,6 +3,13 @@
 Release History
 ---------------
 
+1.0.9 (2016-01-01)
+------------------
+
+**Privacyfixes**
+
+- Fix scan_file (upload to VT), do not leak full path. (credit: @Rafiot)
+
 1.0.8 (2014-12-26)
 ------------------
 
