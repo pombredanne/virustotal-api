@@ -6,14 +6,17 @@ virustotal-api
 .. image:: https://travis-ci.org/blacktop/virustotal-api.svg?branch=master
     :target: https://travis-ci.org/blacktop/virustotal-api
 
-.. image:: https://badge.fury.io/py/virustotal-api.png
-    :target: http://badge.fury.io/py/virustotal-api
+.. image:: https://img.shields.io/pypi/v/virustotal-api.svg
+    :target: https://pypi.python.org/pypi/virustotal-api/
 
-.. image:: https://pypip.in/d/virustotal-api/badge.png
-        :target: https://crate.io/virustotal-api/requests/
+.. image:: https://img.shields.io/pypi/dm/virustotal-api.svg
+        :target: https://pypi.python.org/pypi/virustotal-api/
 
-.. image:: https://img.shields.io/gittip/blacktop.svg
-        :target: https://www.gittip.com/blacktop/
+.. image:: https://img.shields.io/pypi/pyversions/virustotal-api.svg
+        :target: https://pypi.python.org/pypi/virustotal-api/
+
+.. image:: http://img.shields.io/:license-mit-blue.svg
+        :target: http://doge.mit-license.org
 
 Virus Total Public/Private/Intel API
 
@@ -118,7 +121,7 @@ To run the tests:
 Documentation
 -------------
 
-Documentation is comming soon.
+You're looking at it.
 
 Contributing
 ------------
