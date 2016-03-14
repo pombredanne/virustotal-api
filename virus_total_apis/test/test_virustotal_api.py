@@ -98,13 +98,13 @@ class InitTests(TestCase):
         except Exception as e:
             self.fail(e)
 
-    def test_scan_file_stream(self):
-        vt = PublicApi(API_KEY)
-
-        try:
-            print(json.dumps(vt.scan_file(EICAR), sort_keys=False, indent=4))
-        except Exception as e:
-            self.fail(e)
+    # def test_scan_file_stream(self):
+    #     vt = PublicApi(API_KEY)
+    #
+    #     try:
+    #         print(json.dumps(vt.scan_file(EICAR), sort_keys=False, indent=4))
+    #     except Exception as e:
+    #         self.fail(e)
 
     def test_scan_url(self):
         vt = PublicApi(API_KEY)
