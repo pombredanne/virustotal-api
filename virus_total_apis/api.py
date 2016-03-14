@@ -21,7 +21,6 @@ print json.dumps(response, sort_keys=False, indent=4)
 """
 
 import os
-from builtins import dict
 from datetime import datetime, timedelta
 
 try:
