@@ -512,7 +512,7 @@ class PrivateApi(PublicApi):
         :param package: Indicates a time window to pull reports on all items received during such window.
                         Only per-minute and hourly windows are allowed, the format is %Y%m%dT%H%M (e.g. 20160304T0900)
                         or %Y%m%dT%H (e.g. 20160304T09). Time is expressed in UTC.
-        :return: JSON response: please see https://www.virustotal.com/en/documentation/private-api/#file-feed
+        :return: BZIP2 response: please see https://www.virustotal.com/en/documentation/private-api/#file-feed
         """
         if package is None:
             now = datetime.utcnow()
@@ -653,7 +653,7 @@ class PrivateApi(PublicApi):
         :param package: Indicates a time window to pull reports on all items received during such window.
                         Only per-minute and hourly windows are allowed, the format is %Y%m%dT%H%M (e.g. 20160304T0900)
                         or %Y%m%dT%H (e.g. 20160304T09). Time is expressed in UTC.
-        :return: JSON response: please see https://www.virustotal.com/en/documentation/private-api/#file-feed
+        :return: BZIP2 response: please see https://www.virustotal.com/en/documentation/private-api/#file-feed
         """
         if package is None:
             now = datetime.utcnow()
