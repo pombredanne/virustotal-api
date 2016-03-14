@@ -15,7 +15,6 @@ from __future__ import print_function
 
 import hashlib
 import json
-import StringIO
 from unittest import TestCase
 
 from virus_total_apis import ApiError, PublicApi
@@ -90,14 +89,6 @@ class InitTests(TestCase):
             pass
         else:
             self.fail("Should have raised an ApiError")
-
-    def test_scan_file_stringio(self):
-        vt = PublicApi(API_KEY)
-
-        try:
-            print(json.dumps(vt.scan_file(StringIO.StringIO(EICAR)), sort_keys=False, indent=4))
-        except Exception as e:
-            self.fail(e)
 
     def test_scan_file_binary(self):
         vt = PublicApi(API_KEY)
