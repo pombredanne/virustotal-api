@@ -3,6 +3,13 @@
 Release History
 ---------------
 
+1.1.1 (2016-03-13)
+------------------
+
+**API Changes**
+
+- Adding file/url feed private API endpoint.
+
 1.0.9 (2016-01-01)
 ------------------
 

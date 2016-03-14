@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 __title__ = 'virustotal-api'
-__version__ = '1.1.0'
+__version__ = '1.1.1'
 __author__ = 'Josh Maine'
 __license__ = 'MIT'
 __copyright__ = 'Copyright (C) 2014 Josh "blacktop" Maine'
