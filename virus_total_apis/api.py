@@ -71,7 +71,7 @@ class PublicApi():
         :return: JSON response that contains scan_id and permalink.
         """
         params = {'apikey': self.api_key}
-        files = {'file': (this_file, open(this_file, 'rb'))}
+        files = {'file': (os.path.basename(this_file), open(this_file, 'rb').read())}
 
         try:
             response = requests.post(self.base + 'file/scan', files=files, params=params, proxies=self.proxies)
@@ -232,7 +232,7 @@ class PrivateApi(PublicApi):
         :return: JSON response that contains scan_id and permalink.
         """
         params = {'apikey': self.api_key}
-        files = {'file': (this_file, open(this_file, 'rb'))}
+        files = {'file': (os.path.basename(this_file), open(this_file, 'rb').read())}
 
         try:
             response = requests.post(self.base + 'file/scan', files=files, params=params, proxies=self.proxies)
