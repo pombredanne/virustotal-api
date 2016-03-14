@@ -22,7 +22,7 @@ from virus_total_apis import ApiError, PublicApi
 # I created an account to get this API Key for test purposes, please get your own.
 API_KEY = '2539516d471d7beb6b28a720d7a25024edc0f7590d345fc747418645002ac47b'
 
-EICAR = "X5O!P%@AP[4\PZX54(P^)7CC)7}$EICAR-STANDARD-ANTIVIRUS-TEST-FILE!$H+H*"
+EICAR = "X5O!P%@AP[4\PZX54(P^)7CC)7}$EICAR-STANDARD-ANTIVIRUS-TEST-FILE!$H+H*".encode('utf-8')
 
 EICAR_MD5 = hashlib.md5(EICAR).hexdigest()
 EICAR_SHA1 = hashlib.sha1(EICAR).hexdigest()
