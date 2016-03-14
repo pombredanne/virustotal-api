@@ -3,7 +3,7 @@
 """ Simple class to interact with VirusTotal's Public and Private API as well as VirusTotal Intelligence.
 
 :copyright: (c) 2014 by Josh "blacktop" Maine.
-:license: GPLv3, see LICENSE for more details.
+:license: MIT, see LICENSE for more details.
 
 The APIs are documented at:
 https://www.virustotal.com/en/documentation/public-api/
