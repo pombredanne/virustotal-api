@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
 """ Simple class to interact with VirusTotal's Public and Private API as well as VirusTotal Intelligence.
 
 :copyright: (c) 2014 by Josh "blacktop" Maine.
@@ -22,7 +21,7 @@ print json.dumps(response, sort_keys=False, indent=4)
 """
 
 import os
-import StringIO
+from builtins import dict
 from datetime import datetime, timedelta
 
 try:
@@ -62,21 +61,18 @@ class PublicApi():
             raise ApiError("You must supply a valid VirusTotal API key.")
 
     def scan_file(self, this_file):
-        """ Submit a file to be scanned by VirusTotal
+        """ Submit a file to be scanned by VirusTotal.
 
-        :param this_file: File to be scanned (32MB file size limit)
+        The VirusTotal API allows you to send files. Before performing your submissions we encourage you to retrieve
+        the latest report on the files, if it is recent enough you might want to save time and bandwidth by making use
+        of it. File size limit is 32MB. If you have a need to scan larger files, please contact us, and tell us your
+        use case.
+
+        :param this_file: The file to be uploaded. (32MB file size limit)
         :return: JSON response that contains scan_id and permalink.
         """
         params = {'apikey': self.api_key}
-        try:
-            if os.path.isfile(this_file):
-                files = {'file': (os.path.basename(this_file), open(this_file, 'rb').read())}
-            elif isinstance(this_file, StringIO.StringIO):
-                files = {'file': this_file.read()}
-            else:
-                files = {'file': this_file}
-        except TypeError as e:
-            return dict(error=e.message)
+        files = {'file': (this_file, open(this_file, 'rb'))}
 
         try:
             response = requests.post(self.base + 'file/scan', files=files, params=params, proxies=self.proxies)
