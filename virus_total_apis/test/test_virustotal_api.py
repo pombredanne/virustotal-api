@@ -94,7 +94,7 @@ class InitTests(TestCase):
         vt = PublicApi(API_KEY)
 
         try:
-            print(json.dumps(vt.scan_file('test.exe'), sort_keys=False, indent=4))
+            print(json.dumps(vt.scan_file('test/test.exe), sort_keys=False, indent=4))
         except Exception as e:
             self.fail(e)
 
