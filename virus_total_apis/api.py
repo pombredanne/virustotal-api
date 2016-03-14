@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+
 """ Simple class to interact with VirusTotal's Public and Private API as well as VirusTotal Intelligence.
 
 :copyright: (c) 2014 by Josh "blacktop" Maine.
@@ -520,7 +521,9 @@ class PrivateApi(PublicApi):
         """
         if package is None:
             now = datetime.utcnow()
-            five_minutes_ago = now - timedelta(minutes=now.minute % 5 + 5, seconds=now.second, microseconds=now.microsecond)
+            five_minutes_ago = now - timedelta(minutes=now.minute % 5 + 5,
+                                               seconds=now.second,
+                                               microseconds=now.microsecond)
             package = five_minutes_ago.strftime('%Y%m%dT%H%M')
 
         params = {'apikey': self.api_key, 'package': package}
@@ -638,6 +641,51 @@ class PrivateApi(PublicApi):
             return dict(error=e.message)
 
         return _return_response_and_status_code(response)
+
+    def get_url_feed(self, package=None):
+        """ Get a live file feed with the latest files submitted to VirusTotal.
+
+        Allows you to retrieve a live feed of reports on absolutely all URLs scanned by VirusTotal. This API requires
+        you to stay relatively synced with the live submissions as only a backlog of 24 hours is provided at any given
+        point in time.
+
+        This API returns a bzip2 compressed tarball. For per-minute packages the compressed package contains a unique
+        file, the file contains a json per line, this json is a full report on a given URL processed by VirusTotal
+        during the given time window. The URL report follows the exact same format as the response of the URL report
+        API if the allinfo=1 parameter is provided. For hourly packages, the tarball contains 60 files, one per each
+        minute of the window.
+
+        :param package: Indicates a time window to pull reports on all items received during such window.
+                        Only per-minute and hourly windows are allowed, the format is %Y%m%dT%H%M (e.g. 20160304T0900)
+                        or %Y%m%dT%H (e.g. 20160304T09). Time is expressed in UTC.
+        :return: JSON response: please see https://www.virustotal.com/en/documentation/private-api/#file-feed
+        """
+        if package is None:
+            now = datetime.utcnow()
+            five_minutes_ago = now - timedelta(minutes=now.minute % 5 + 5,
+                                               seconds=now.second,
+                                               microseconds=now.microsecond)
+            package = five_minutes_ago.strftime('%Y%m%dT%H%M')
+
+        params = {'apikey': self.api_key, 'package': package}
+
+        try:
+            response = requests.get(self.base + 'url/feed', params=params, proxies=self.proxies)
+        except requests.RequestException as e:
+            return dict(error=e.message)
+
+        if response.ok:
+            return response.content
+        elif response.status_code == 400:
+            return dict(error='package sent is either malformed or not within the past 24 hours.',
+                        response_code=response.status_code)
+        elif response.status_code == 403:
+            return dict(error='You tried to perform calls to functions for which you require a Private API key.',
+                        response_code=response.status_code)
+        elif response.status_code == 404:
+            return dict(error='File not found.', response_code=response.status_code)
+        else:
+            return dict(response_code=response.status_code)
 
     def get_ip_report(self, this_ip):
         """ Get information about a given IP address.
