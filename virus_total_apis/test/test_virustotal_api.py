@@ -98,13 +98,29 @@ class InitTests(TestCase):
         except Exception as e:
             self.fail(e)
 
-    # def test_scan_file_stream(self):
-    #     vt = PublicApi(API_KEY)
-    #
-    #     try:
-    #         print(json.dumps(vt.scan_file(EICAR), sort_keys=False, indent=4))
-    #     except Exception as e:
-    #         self.fail(e)
+    def test_scan_file_binary_filename(self):
+        vt = PublicApi(API_KEY)
+
+        try:
+            print(json.dumps(vt.scan_file('virus_total_apis/test/test.exe', filename='othertest.exe'), sort_keys=False, indent=4))
+        except Exception as e:
+            self.fail(e)
+
+    def test_scan_file_stream(self):
+        vt = PublicApi(API_KEY)
+
+        try:
+            print(json.dumps(vt.scan_file(EICAR, from_disk=False), sort_keys=False, indent=4))
+        except Exception as e:
+            self.fail(e)
+
+    def test_scan_file_stream_filename(self):
+        vt = PublicApi(API_KEY)
+
+        try:
+            print(json.dumps(vt.scan_file(EICAR, from_disk=False, filename='my_eicar_file.txt'), sort_keys=False, indent=4))
+        except Exception as e:
+            self.fail(e)
 
     def test_scan_url(self):
         vt = PublicApi(API_KEY)

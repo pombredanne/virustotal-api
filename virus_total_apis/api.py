@@ -59,7 +59,7 @@ class PublicApi():
         if api_key is None:
             raise ApiError("You must supply a valid VirusTotal API key.")
 
-    def scan_file(self, this_file):
+    def scan_file(self, this_file, from_disk=True, filename=None):
         """ Submit a file to be scanned by VirusTotal.
 
         The VirusTotal API allows you to send files. Before performing your submissions we encourage you to retrieve
@@ -68,10 +68,21 @@ class PublicApi():
         use case.
 
         :param this_file: The file to be uploaded. (32MB file size limit)
+        :param from_disk: If True we read the file contents from disk using this_file as filepath. If False this_file
+                          is the actual file object.
+        :param filename: Specify the filename, this overwrites the filename if we read a file from disk.
         :return: JSON response that contains scan_id and permalink.
         """
         params = {'apikey': self.api_key}
-        files = {'file': (os.path.basename(this_file), open(this_file, 'rb').read())}
+        if from_disk:
+            if not filename:
+                filename = os.path.basename(this_file)
+            files = {'file': (filename, open(this_file, 'rb').read())}
+        else:
+            if filename:
+                files = {'file': (filename, this_file)}
+            else:
+                files = {'file': this_file}
 
         try:
             response = requests.post(self.base + 'file/scan', files=files, params=params, proxies=self.proxies)
@@ -217,7 +228,7 @@ class PublicApi():
 
 class PrivateApi(PublicApi):
 
-    def scan_file(self, this_file, notify_url=None, notify_changes_only=None):
+    def scan_file(self, this_file, notify_url=None, notify_changes_only=None, from_disk=True, filename=None):
         """ Submit a file to be scanned by VirusTotal.
 
         Allows you to send a file for scanning with VirusTotal. Before performing your submissions we encourage you to
@@ -229,10 +240,21 @@ class PrivateApi(PublicApi):
         :param notify_url: A URL to which a POST notification should be sent when the scan finishes.
         :param notify_changes_only: Used in conjunction with notify_url. Indicates if POST notifications should be
                                     sent only if the scan results differ from the previous analysis.
+        :param from_disk: If True we read the file contents from disk using this_file as filepath. If False this_file
+                          is the actual file object.
+        :param filename: Specify the filename, this overwrites the filename if we read a file from disk.
         :return: JSON response that contains scan_id and permalink.
         """
         params = {'apikey': self.api_key}
-        files = {'file': (os.path.basename(this_file), open(this_file, 'rb').read())}
+        if from_disk:
+            if not filename:
+                filename = os.path.basename(this_file)
+            files = {'file': (filename, open(this_file, 'rb').read())}
+        else:
+            if filename:
+                files = {'file': (filename, this_file)}
+            else:
+                files = {'file': this_file}
 
         try:
             response = requests.post(self.base + 'file/scan', files=files, params=params, proxies=self.proxies)
