@@ -102,7 +102,11 @@ class InitTests(TestCase):
         vt = PublicApi(API_KEY)
 
         try:
-            print(json.dumps(vt.scan_file('virus_total_apis/test/test.exe', filename='othertest.exe'), sort_keys=False, indent=4))
+            print(json.dumps(
+                vt.scan_file('virus_total_apis/test/test.exe',
+                             filename='othertest.exe'),
+                sort_keys=False,
+                indent=4))
         except Exception as e:
             self.fail(e)
 
@@ -118,7 +122,12 @@ class InitTests(TestCase):
         vt = PublicApi(API_KEY)
 
         try:
-            print(json.dumps(vt.scan_file(EICAR, from_disk=False, filename='my_eicar_file.txt'), sort_keys=False, indent=4))
+            print(json.dumps(
+                vt.scan_file(EICAR,
+                             from_disk=False,
+                             filename='my_eicar_file.txt'),
+                sort_keys=False,
+                indent=4))
         except Exception as e:
             self.fail(e)
 

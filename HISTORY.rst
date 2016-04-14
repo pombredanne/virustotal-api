@@ -3,6 +3,13 @@
 Release History
 ---------------
 
+1.1.2 (2016-04-13)
+------------------
+
+**API Changes**
+
+- Re-adding the ability to use files from memory as well as from disk. (credit: @tweemeterjop)
+
 1.1.1 (2016-03-13)
 ------------------
 
