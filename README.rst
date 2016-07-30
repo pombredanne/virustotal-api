@@ -121,12 +121,19 @@ Documentation
 
 You're looking at it.
 
+Issues
+------
+
+Find a bug? Want more features? Find something missing in the documentation? Let me know! Please don't hesitate to [file an issue](https://github.com/blacktop/virustotal-api/issues/new) and I'll get right on it.
+
 Contributing
 ------------
 
-1. Fork it.
-2. Create a branch (`git checkout -b my_virus_total_api`)
-3. Commit your changes (`git commit -am "Added Something Cool"`)
-4. Push to the branch (`git push origin my_virus_total_api`)
-5. Open a [Pull Request](https://github.com/blacktop/virustotal-api/pulls)
-6. Wait for me to figure out what the heck a pull request is...
+[See all contributors on GitHub](https://github.com/blacktop/virustotal-api/graphs/contributors).
+
+Please update the [HISTORY.rst](https://github.com/blacktop/virustotal-api/blob/master/HISTORY.rst), and submit a [Pull Request on GitHub](https://help.github.com/articles/using-pull-requests/).
+
+License
+-------
+
+MIT Copyright (c) 2014-2016 **blacktop**
