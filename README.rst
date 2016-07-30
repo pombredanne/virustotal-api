@@ -124,14 +124,14 @@ You're looking at it.
 Issues
 ------
 
-Find a bug? Want more features? Find something missing in the documentation? Let me know! Please don't hesitate to :file an issue:`https://github.com/blacktop/virustotal-api/issues/new` and I'll get right on it.
+Find a bug? Want more features? Find something missing in the documentation? Let me know! Please don't hesitate to `file an issue <https://github.com/blacktop/virustotal-api/issues/new>` and I'll get right on it.
 
 Contributing
 ------------
 
-:See all contributors on GitHub:`https://github.com/blacktop/virustotal-api/graphs/contributors`.
+`See all contributors on GitHub <https://github.com/blacktop/virustotal-api/graphs/contributors>`.
 
-Please update the :HISTORY.rst:`https://github.com/blacktop/virustotal-api/blob/master/HISTORY.rst`, and submit a :Pull Request on GitHub:`https://help.github.com/articles/using-pull-requests/`.
+Please update the `HISTORY.rst <https://github.com/blacktop/virustotal-api/blob/master/HISTORY.rst>`, and submit a `Pull Request on GitHub <https://help.github.com/articles/using-pull-requests/>`.
 
 License
 -------
