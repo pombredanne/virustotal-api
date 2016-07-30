@@ -6,17 +6,15 @@ virustotal-api
 .. image:: https://travis-ci.org/blacktop/virustotal-api.svg?branch=master
     :target: https://travis-ci.org/blacktop/virustotal-api
 
+.. image:: http://img.shields.io/:license-mit-blue.svg
+        :target: http://doge.mit-license.org
+
 .. image:: https://img.shields.io/pypi/v/virustotal-api.svg
     :target: https://pypi.python.org/pypi/virustotal-api/
-
-.. image:: https://img.shields.io/pypi/dm/virustotal-api.svg
-        :target: https://pypi.python.org/pypi/virustotal-api/
 
 .. image:: https://img.shields.io/pypi/pyversions/virustotal-api.svg
         :target: https://pypi.python.org/pypi/virustotal-api/
 
-.. image:: http://img.shields.io/:license-mit-blue.svg
-        :target: http://doge.mit-license.org
 
 Virus Total Public/Private/Intel API
 
