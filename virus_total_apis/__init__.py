@@ -2,9 +2,9 @@
 # -*- coding: utf-8 -*-
 
 __title__ = 'virustotal-api'
-__version__ = '1.0.8'
+__version__ = '1.1.2'
 __author__ = 'Josh Maine'
-__license__ = 'GPLv3'
+__license__ = 'MIT'
 __copyright__ = 'Copyright (C) 2014 Josh "blacktop" Maine'
 
 try:

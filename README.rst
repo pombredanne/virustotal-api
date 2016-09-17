@@ -6,14 +6,15 @@ virustotal-api
 .. image:: https://travis-ci.org/blacktop/virustotal-api.svg?branch=master
     :target: https://travis-ci.org/blacktop/virustotal-api
 
-.. image:: https://badge.fury.io/py/virustotal-api.png
-    :target: http://badge.fury.io/py/virustotal-api
+.. image:: http://img.shields.io/:license-mit-blue.svg
+        :target: http://doge.mit-license.org
 
-.. image:: https://pypip.in/d/virustotal-api/badge.png
-        :target: https://crate.io/virustotal-api/requests/
+.. image:: https://img.shields.io/pypi/v/virustotal-api.svg
+    :target: https://pypi.python.org/pypi/virustotal-api/
 
-.. image:: https://img.shields.io/gittip/blacktop.svg
-        :target: https://www.gittip.com/blacktop/
+.. image:: https://img.shields.io/pypi/pyversions/virustotal-api.svg
+        :target: https://pypi.python.org/pypi/virustotal-api/
+
 
 Virus Total Public/Private/Intel API
 
@@ -113,19 +114,29 @@ Testing
 
 To run the tests:
 
+.. code-block:: bash
+
     $ ./tests
+
 
 Documentation
 -------------
 
-Documentation is comming soon.
+You're looking at it.
+
+Issues
+------
+
+Find a bug? Want more features? Find something missing in the documentation? Let me know! Please don't hesitate to `file an issue <https://github.com/blacktop/virustotal-api/issues/new>`_ and I'll get right on it.
 
 Contributing
 ------------
 
-1. Fork it.
-2. Create a branch (`git checkout -b my_virus_total_api`)
-3. Commit your changes (`git commit -am "Added Something Cool"`)
-4. Push to the branch (`git push origin my_virus_total_api`)
-5. Open a [Pull Request](https://github.com/blacktop/virustotal-api/pulls)
-6. Wait for me to figure out what the heck a pull request is...
+`See all contributors on GitHub <https://github.com/blacktop/virustotal-api/graphs/contributors>`_.
+
+Please update the `HISTORY.rst <https://github.com/blacktop/virustotal-api/blob/master/HISTORY.rst>`_, and submit a `Pull Request on GitHub <https://help.github.com/articles/using-pull-requests/>`_.
+
+License
+-------
+
+MIT Copyright (c) 2014-2016 **blacktop**

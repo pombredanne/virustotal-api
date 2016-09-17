@@ -1,10 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
 """ Simple class to interact with VirusTotal's Public and Private API as well as VirusTotal Intelligence.
 
 :copyright: (c) 2014 by Josh "blacktop" Maine.
-:license: GPLv3, see LICENSE for more details.
+:license: MIT, see LICENSE for more details.
 
 The APIs are documented at:
 https://www.virustotal.com/en/documentation/public-api/
@@ -22,7 +21,8 @@ print json.dumps(response, sort_keys=False, indent=4)
 """
 
 import os
-import StringIO
+from datetime import datetime, timedelta
+
 try:
     import requests
 except ImportError:
@@ -59,22 +59,30 @@ class PublicApi():
         if api_key is None:
             raise ApiError("You must supply a valid VirusTotal API key.")
 
-    def scan_file(self, this_file):
-        """ Submit a file to be scanned by VirusTotal
+    def scan_file(self, this_file, from_disk=True, filename=None):
+        """ Submit a file to be scanned by VirusTotal.
 
-        :param this_file: File to be scanned (32MB file size limit)
+        The VirusTotal API allows you to send files. Before performing your submissions we encourage you to retrieve
+        the latest report on the files, if it is recent enough you might want to save time and bandwidth by making use
+        of it. File size limit is 32MB. If you have a need to scan larger files, please contact us, and tell us your
+        use case.
+
+        :param this_file: The file to be uploaded. (32MB file size limit)
+        :param from_disk: If True we read the file contents from disk using this_file as filepath. If False this_file
+                          is the actual file object.
+        :param filename: Specify the filename, this overwrites the filename if we read a file from disk.
         :return: JSON response that contains scan_id and permalink.
         """
         params = {'apikey': self.api_key}
-        try:
-            if os.path.isfile(this_file):
-                files = {'file': (this_file, open(this_file, 'rb'))}
-            elif isinstance(this_file, StringIO.StringIO):
-                files = {'file': this_file.read()}
+        if from_disk:
+            if not filename:
+                filename = os.path.basename(this_file)
+            files = {'file': (filename, open(this_file, 'rb').read())}
+        else:
+            if filename:
+                files = {'file': (filename, this_file)}
             else:
                 files = {'file': this_file}
-        except TypeError as e:
-            return dict(error=e.message)
 
         try:
             response = requests.post(self.base + 'file/scan', files=files, params=params, proxies=self.proxies)
@@ -219,7 +227,8 @@ class PublicApi():
 
 
 class PrivateApi(PublicApi):
-    def scan_file(self, this_file, notify_url=None, notify_changes_only=None):
+
+    def scan_file(self, this_file, notify_url=None, notify_changes_only=None, from_disk=True, filename=None):
         """ Submit a file to be scanned by VirusTotal.
 
         Allows you to send a file for scanning with VirusTotal. Before performing your submissions we encourage you to
@@ -231,10 +240,21 @@ class PrivateApi(PublicApi):
         :param notify_url: A URL to which a POST notification should be sent when the scan finishes.
         :param notify_changes_only: Used in conjunction with notify_url. Indicates if POST notifications should be
                                     sent only if the scan results differ from the previous analysis.
+        :param from_disk: If True we read the file contents from disk using this_file as filepath. If False this_file
+                          is the actual file object.
+        :param filename: Specify the filename, this overwrites the filename if we read a file from disk.
         :return: JSON response that contains scan_id and permalink.
         """
         params = {'apikey': self.api_key}
-        files = {'file': (this_file, open(this_file, 'rb'))}
+        if from_disk:
+            if not filename:
+                filename = os.path.basename(this_file)
+            files = {'file': (filename, open(this_file, 'rb').read())}
+        else:
+            if filename:
+                files = {'file': (filename, this_file)}
+            else:
+                files = {'file': this_file}
 
         try:
             response = requests.post(self.base + 'file/scan', files=files, params=params, proxies=self.proxies)
@@ -498,6 +518,51 @@ class PrivateApi(PublicApi):
 
         return _return_response_and_status_code(response)
 
+    def get_file_feed(self, package=None):
+        """ Get a live file feed with the latest files submitted to VirusTotal.
+
+        Allows you to retrieve a live feed of absolutely all uploaded files to VirusTotal, and download them for
+        further scrutiny, along with their full reports. This API requires you to stay relatively synced with the live
+        submissions as only a backlog of 24 hours is provided at any given point in time.
+
+        This API returns a bzip2 compressed tarball. For per-minute packages the compressed package contains a unique
+        file, the file contains a json per line, this json is a full report on a given file processed by VirusTotal
+        during the given time window. The file report follows the exact same format as the response of the file report
+        API if the allinfo=1 parameter is provided. For hourly packages, the tarball contains 60 files, one per each
+        minute of the window.
+
+        :param package: Indicates a time window to pull reports on all items received during such window.
+                        Only per-minute and hourly windows are allowed, the format is %Y%m%dT%H%M (e.g. 20160304T0900)
+                        or %Y%m%dT%H (e.g. 20160304T09). Time is expressed in UTC.
+        :return: BZIP2 response: please see https://www.virustotal.com/en/documentation/private-api/#file-feed
+        """
+        if package is None:
+            now = datetime.utcnow()
+            five_minutes_ago = now - timedelta(minutes=now.minute % 5 + 5,
+                                               seconds=now.second,
+                                               microseconds=now.microsecond)
+            package = five_minutes_ago.strftime('%Y%m%dT%H%M')
+
+        params = {'apikey': self.api_key, 'package': package}
+
+        try:
+            response = requests.get(self.base + 'file/feed', params=params, proxies=self.proxies)
+        except requests.RequestException as e:
+            return dict(error=e.message)
+
+        if response.ok:
+            return response.content
+        elif response.status_code == 400:
+            return dict(error='package sent is either malformed or not within the past 24 hours.',
+                        response_code=response.status_code)
+        elif response.status_code == 403:
+            return dict(error='You tried to perform calls to functions for which you require a Private API key.',
+                        response_code=response.status_code)
+        elif response.status_code == 404:
+            return dict(error='File not found.', response_code=response.status_code)
+        else:
+            return dict(response_code=response.status_code)
+
     def get_file(self, this_hash):
         """ Download a file by its hash.
 
@@ -593,6 +658,51 @@ class PrivateApi(PublicApi):
             return dict(error=e.message)
 
         return _return_response_and_status_code(response)
+
+    def get_url_feed(self, package=None):
+        """ Get a live file feed with the latest files submitted to VirusTotal.
+
+        Allows you to retrieve a live feed of reports on absolutely all URLs scanned by VirusTotal. This API requires
+        you to stay relatively synced with the live submissions as only a backlog of 24 hours is provided at any given
+        point in time.
+
+        This API returns a bzip2 compressed tarball. For per-minute packages the compressed package contains a unique
+        file, the file contains a json per line, this json is a full report on a given URL processed by VirusTotal
+        during the given time window. The URL report follows the exact same format as the response of the URL report
+        API if the allinfo=1 parameter is provided. For hourly packages, the tarball contains 60 files, one per each
+        minute of the window.
+
+        :param package: Indicates a time window to pull reports on all items received during such window.
+                        Only per-minute and hourly windows are allowed, the format is %Y%m%dT%H%M (e.g. 20160304T0900)
+                        or %Y%m%dT%H (e.g. 20160304T09). Time is expressed in UTC.
+        :return: BZIP2 response: please see https://www.virustotal.com/en/documentation/private-api/#file-feed
+        """
+        if package is None:
+            now = datetime.utcnow()
+            five_minutes_ago = now - timedelta(minutes=now.minute % 5 + 5,
+                                               seconds=now.second,
+                                               microseconds=now.microsecond)
+            package = five_minutes_ago.strftime('%Y%m%dT%H%M')
+
+        params = {'apikey': self.api_key, 'package': package}
+
+        try:
+            response = requests.get(self.base + 'url/feed', params=params, proxies=self.proxies)
+        except requests.RequestException as e:
+            return dict(error=e.message)
+
+        if response.ok:
+            return response.content
+        elif response.status_code == 400:
+            return dict(error='package sent is either malformed or not within the past 24 hours.',
+                        response_code=response.status_code)
+        elif response.status_code == 403:
+            return dict(error='You tried to perform calls to functions for which you require a Private API key.',
+                        response_code=response.status_code)
+        elif response.status_code == 404:
+            return dict(error='File not found.', response_code=response.status_code)
+        else:
+            return dict(response_code=response.status_code)
 
     def get_ip_report(self, this_ip):
         """ Get information about a given IP address.
